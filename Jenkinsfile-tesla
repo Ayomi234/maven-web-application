@@ -28,4 +28,5 @@ node{
   stage('8.notification'){
       emailextrecipients([developers(), buildUser()])
   }
-  
+  }
+  }
