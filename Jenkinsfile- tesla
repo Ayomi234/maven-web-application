@@ -1,30 +1,32 @@
 node{
-   def mavenHome = tool name: 'maven3.9.2'
- stage('1.CodeClone'){
-git "https://github.com/LandmakTechnology/maven-web-application"
-    //sh  "git clone https://github.com/LandmakTechnology/maven-web-application"
+    def mavenHome = tool name: 'maven3.8.2'
+  stage('1.GetCode'){
+    git "https://github.com/Ayomi234/maven-web-application"
+    //sh "git clone https://github.com/LandmakTechnology/maven-web-application"
     //bat "git clone https://github.com/LandmakTechnology/maven-web-application"
   }
-  stage('2MavenBuild'){
-      sh "${mavenHome}/bin/mvn package"
+  stage('2.Build'){ 
+     sh "${mavenHome}/bin/mvn package"
   }
-  stage('3CodeQualityAnalysis'){
+  stage('3.codeQualityAnalysis'){ 
       sh "${mavenHome}/bin/mvn sonar:sonar"
   }
-  stage('4Upload2Nexus'){
+  stage('4.upload'){
       sh "${mavenHome}/bin/mvn deploy"
   }
-  stage('5Deploy2UAT'){
-      deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://54.87.46.234:8177')], contextPath: null, war: 'target/*war'
+  stage('5.deploy2UAT'){
+      deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://44.211.163.17:8100')], contextPath: null, war: 'target/*war' 
   }
-  stage('6ManualApproval'){
-      sh "echo 'apps ready for review' "
+  stage('6.Approval'){
+        sh "echo 'apps ready for review' "
       timeout(time:5, unit: 'HOURS') {
           input message: 'Application ready for deployment, please review and approve'
-      }
   }
-  stage('7Deploy2Prod'){
-      deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://54.87.46.234:8177')], contextPath: null, war: 'target/*war'
+  stage('7.production'){
+      deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://44.211.163.17:8100')], contextPath: null, war: 'target/*war'
   }
-  stage('8Notification'){}
-}
+  stage('8.notification'){
+      emailextrecipients([developers(), buildUser()])
+  }
+  }
+  }
