@@ -14,7 +14,6 @@ node{
   stage('4.upload'){
       sh "${mavenHome}/bin/mvn deploy"
   }
-  */
   stage('5.deploy2UAT'){
       deploy adapters: [tomcat9(credentialsId: 'tomcat-credentials', path: '', url: 'http://54.164.98.24:8100')], contextPath: null, war: 'target/*war' 
   }
@@ -29,6 +28,5 @@ node{
   stage('8.notification'){
       emailextrecipients([developers(), buildUser()])
   }
-  */
   }
   }
